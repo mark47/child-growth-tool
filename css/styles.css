@@ -1,0 +1,106 @@
+/* Added for PBM */
+    body, table, tr, th, td {
+      /* Allegedly allows background-color to be printed in Chrome. Doesn't seem to work for me */
+      -webkit-print-color-adjust:exact;
+    }
+    .feedback-table th, .feedback-table td {
+        text-align: center;
+        width: 208px;
+    }
+    .feedback-table tr th:first-child, .feedback-table tr td:first-child {
+        font-weight: bold;
+        text-align: left;
+        width: 271px;
+    }
+    .feedback-table tr td:first-child div {
+        font-weight: normal;
+    }
+    .feedback-table tr.stripe td {
+        background-color: #f9f9f9;
+    }
+    /* Testing hack for background-color */
+    .feedback-table tr.stripe-image td {
+        background-image: url('../img/background-f9f9f9.png');
+    }
+    .report-title {
+        font-size: 20px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #ccc;
+    }
+    .patient-info {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 12px 0 24px;
+    }
+    .print-date {
+        float: right;
+        font-size: 14px;
+    }
+    .print-show {
+        visibility: hidden;
+    }
+    .page-break  { display: none; }
+
+    .table-smaller.table-condensed th, .table-smaller.table-condensed td {
+      padding: 3px 5px;
+    }
+    .table-smaller.table th, .table-smaller.table td {
+      line-height: 18px;
+    }
+
+    .problem {
+        color: #b94a48;
+        font-weight: bold;
+        position: relative;
+        background-color: #f2dede
+    }
+    .problem i {
+        float: left;
+        color: #b94a48;
+        position: absolute;
+        left: 4px;
+    }
+
+    /** added for nutrition **/
+    .modal {
+        width: 800px;
+        margin-left: -400px;
+    }
+    .chart-launch:hover {
+        cursor: pointer;
+    }
+
+
+
+
+    @media (min-width: 1200px) {
+
+    }
+    @media (max-width: 979px) and (min-width: 768px) {
+
+    }
+    @media (max-width: 767px) {
+
+    }
+    @media print {
+        /* Print styles simplify to table "look" which allows for more consistent printing */
+        table.table-bordered {
+          border: 0;
+        }
+        .table-bordered tr th, .table-bordered tr td:first-child {
+          border-left: 0;
+        }
+        .table-bordered tr:last-child td {
+          border-bottom: 1px solid #ddd;
+        }
+        .table-bordered thead:last-child tr:last-child > th:first-child, .table-bordered tbody:last-child tr:last-child > td:first-child, .table-bordered thead:last-child tr:last-child > th:last-child, .table-bordered tbody:last-child tr:last-child > td:last-child {
+          -webkit-border-radius: 0;
+          border-radius: 0;
+          -moz-border-radius: 0;
+        }   
+        .rating-high img { visibility: visible; }
+        .print-show { visibility: visible; }
+        /* Use this to experiment with preventing page breaks within divs (include <div class="page-break">. Appears to work in Firefox, but not Chrome)
+        .page-break { display: block; page-break-before: always; }
+        */
+    }
