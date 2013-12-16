@@ -137,9 +137,9 @@ $(document).ready(function () {
   // Array of indicators. 2nd field is x-axis value. 3rd field is essentially y-axis.
   var calcArray = new Array(
     ["who_weight_length_45-110", "length", "weight"],
-    ["who_weight_day_0-1856","age", "weight"],
-    ["who_lengthHeight_day_0-1856","age", "length"],
-    ["who_bmi_day_0-1856","age", "bmi"]
+    ["who_weight_day_0-3650","age", "weight"],
+    ["who_lengthHeight_day_0-6935","age", "length"],
+    ["who_bmi_day_0-6935","age", "bmi"]
   )
 
   function runCalc(){
