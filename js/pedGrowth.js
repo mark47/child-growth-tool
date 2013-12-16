@@ -1,28 +1,66 @@
 $(document).ready(function () {
 
+/** Set variables and contstants **/
 	var line = null;
   var currentDate = new Date();
-  var formWeight, formAge, formGender, formLength, formBirthday, formBMI;
+  var formWeight, formAge, formGender, formLength, formBirthday, formBMI, formMeasureDate;
   var json, jsonPercents, findZScore, arraySelect;
   var xTitle, yTitle, xPoint, yPoint;
 
+  // Constants used for date/time unit conversion. Taken from EW's old
+  // graphSetup code.
+  growthConstants = {};
+  //Days in a tropical (solar) year as of Jan 1, 2000. Source http://en.wikipedia.org/wiki/Tropical_year#Mean_tropical_year_current_value
+  //This one isn't much use here. It is approxamtily what you get when you enter 'days in a year' in to Google though. 
+  growthConstants.daysInTropicalYear = 365.2421897;
+  //Days in a year based on the Gregorian calendar. This is probably the most accurate and useful value to use in the long term. 
+  growthConstants.daysInGregorianYear = 365.2425;
+  //Days in a year based on the Julian calendar. The only reason this is here is because this is the value specified by the WHO guidelines. 
+  growthConstants.daysInJulianYear = 365.25;
+  //Nobody disagrees on this. La la la la http://en.wikipedia.org/wiki/Leap_second I can't hear you.
+  growthConstants.secondsInADay = 86400;
+  growthConstants.millisecondsInAGregorianYear 
+      = 1000 * growthConstants.secondsInADay * growthConstants.daysInGregorianYear;
+  growthConstants.millisecondsInAGregorianMonth
+      = growthConstants.millisecondsInAGregorianYear / 12;
+  growthConstants.millisecondsInAJulianMonth
+      = 1000 * growthConstants.secondsInADay * growthConstants.daysInJulianYear / 12;
+/** End - Set variables and contstants **/
 
-/*** Math functions ***/
+/** Misc functions to be used **/
+  
+  // calculates z-score for l,m,s
+  function valueToZScore(l, m, s, value) {
+      if (l === 0) {
+    return Math.log(value/m) / s;
+      } else {
+    return (Math.pow(value/m, l) - 1) / (l*s);
+      }
+  }
 
-function calcBMI(weight, height) {
+  // Calculates BMI
+  function calcBMI(weight, height) {
     var resultBMI = weight / (Math.pow((height / 100), 2));
     return resultBMI;
-}
-// calculates z-score for l,m,s
-function valueToZScore(l, m, s, value) {
-    if (l === 0) {
-  return Math.log(value/m) / s;
-    } else {
-  return (Math.pow(value/m, l) - 1) / (l*s);
-    }
-}
+  } 
 
-/*** End - Math functions ***/
+  // Get age at a certain date
+  function getAgeAtDate(birthday, apptDate) {
+    var checkDiff = new Date(apptDate - birthday);
+    return Math.round(checkDiff/1000/60/60/24);
+  }
+  // Get age in months
+  function getMonths(birthDate, date) {
+    var age = (date - birthDate) * (1 / growthConstants.millisecondsInAGregorianMonth);
+    return age;
+  }
+  // Get age in years
+  function getYears(birthDate, date) {
+    var age = (date - birthDate) * (1 / growthConstants.millisecondsInAGregorianYear);
+    return age;
+  }
+
+/** End - Misc functions to be used **/
 
   // get data on ready - Note: farther down we get JSON charting data only after triggers
   $.getJSON('data/z-scores.json', function(data) {
@@ -167,8 +205,8 @@ function valueToZScore(l, m, s, value) {
       genderShort = 'm';
     }
     $.getJSON('data/dataChartStddevs_'+genderShort+'.json', function(data) {
-      for(var i = 0; i < data[metric][gender].length; i ++) {
-        jsonChartData.push([data[metric][gender][i][0], data[metric][gender][i][1], data[metric][gender][i][2], data[metric][gender][i][3], data[metric][gender][i][4], data[metric][gender][i][5], data[metric][gender][i][6], data[metric][gender][i][7]]); 
+      for(var i = 0; i < data[metric].length; i ++) {
+        jsonChartData.push([data[metric][i][0], data[metric][i][1], data[metric][i][2], data[metric][i][3], data[metric][i][4], data[metric][i][5], data[metric][i][6], data[metric][i][7]]); 
       }
       var lineData = jsonChartData;
       console.log(jsonChartData);
@@ -337,28 +375,44 @@ function valueToZScore(l, m, s, value) {
     
 
 /*** Triggers ***/
+  
+  // Check if fields are filled, if so, run calculator
+  function fieldCheck() {
+    var anyFieldIsEmpty = $("form input.trigger-calc").filter(function() {
+              return $.trim(this.value).length === 0;
+          }).length > 0;
+    if (!anyFieldIsEmpty) {
+      runCalc();
+    }
+  }
 
   // Trigger calculator when form values change
   $("#formGender").on("change", function(){    
     formGender = $(this).val();
     loadIndicators(formGender);
-    runCalc();
+    fieldCheck();
   });
   $("#formBirthday").focusout(function(){    
-    //var formBirthday = new Date("2013-08-01");
     formBirthday = new Date($(this).val());
-    var diff = new Date(currentDate - formBirthday);
-    formAge = Math.round(diff/1000/60/60/24);
-    console.log(formAge);
-    runCalc();
+    if (formMeasureDate) {
+      formAge = getAgeAtDate(formBirthday, formMeasureDate);
+      fieldCheck();
+    }
+  });
+  $("#formMeasureDate").focusout(function(){    
+    formMeasureDate = new Date($(this).val());
+    if (formBirthday) {
+      formAge = getAgeAtDate(formBirthday, formMeasureDate);
+      fieldCheck();
+    }
   });
   $("#formWeight").focusout(function(){
     formWeight = $(this).val();
-    runCalc();
+    fieldCheck();
   });
   $("#formHeight").focusout(function(){
     formLength = $(this).val();
-    runCalc();
+    fieldCheck();
   });
   // Main single line chart used with rows and subrows
   $("body").on('click', '.chart-launch', (function() {
