@@ -3,7 +3,7 @@ $(document).ready(function () {
 /** Set variables and contstants **/
 	var line = null;
   var currentDate = new Date();
-  var formWeight, formAge, formGender, formLength, formBirthday, formBMI, formMeasureDate;
+  var formUnit, formWeight, formAge, formGender, formHeight, formBirthday, formBMI, formMeasureDate;
   var json, jsonPercents, findZScore, arraySelect;
   var xTitle, yTitle, xPoint, yPoint;
 
@@ -31,11 +31,11 @@ $(document).ready(function () {
   
   // calculates z-score for l,m,s
   function valueToZScore(l, m, s, value) {
-      if (l === 0) {
-    return Math.log(value/m) / s;
-      } else {
-    return (Math.pow(value/m, l) - 1) / (l*s);
-      }
+    if (l === 0) {
+      return Math.log(value/m) / s;
+    } else {
+      return (Math.pow(value/m, l) - 1) / (l*s);
+    }
   }
 
   // Calculates BMI
@@ -60,6 +60,16 @@ $(document).ready(function () {
     return age;
   }
 
+  // Conversions
+  function convInCm(value){
+    var calcVal = (value * 2.54).toFixed(1);
+    return calcVal;
+  }
+  function convLbKg(value){
+    var calcVal = (value * 0.453592).toFixed(1);
+    return calcVal;
+  }
+
 /** End - Misc functions to be used **/
 
   // get data on ready - Note: farther down we get JSON charting data only after triggers
@@ -68,7 +78,6 @@ $(document).ready(function () {
     });
 
   function loadIndicators(gender)  {
-    console.log(gender);
     if (gender == "female") {
       $.getJSON('data/whoIndicators_f.json', function(data) {
         json = data;
@@ -79,10 +88,6 @@ $(document).ready(function () {
       });
     }
   }
-
-  $("body").on("click", function(){
-        console.log(json);  
-  })
 
     // Percent based on z-score
     function findPercentage(passedZ) {
@@ -157,16 +162,16 @@ $(document).ready(function () {
           if (calcArray[i][1] == 'age') {
             xValue = formAge;
           } else {
-            xValue = formLength;
+            xValue = formHeight;
           }
           $('#result' + i).text(getCalculation(formGender, xValue, 3, calcArray[i][0]));
 
           if (calcArray[i][2] == 'bmi') {
-            formBMI = calcBMI(formWeight, formLength);
-            $("#formBMI").val(formBMI.toFixed(1));
+            formBMI = calcBMI(formWeight, formHeight);
+            $("#formBMI").text(formBMI.toFixed(1));
             findZScore = valueToZScore(line[1], line[2], line[3],  formBMI);
           } else if (calcArray[i][2] == 'length') {
-            findZScore = valueToZScore(line[1], line[2], line[3],  formLength);
+            findZScore = valueToZScore(line[1], line[2], line[3],  formHeight);
           } else {
             findZScore = valueToZScore(line[1], line[2], line[3],  formWeight);
           }
@@ -187,12 +192,15 @@ $(document).ready(function () {
 
       }
 
+    } else {
+      console.log('no dice');
     }
   }
 
 
 	var jsonChartData = [];
   function getChartLines(metric, gender) {
+    console.log(metric);
     // Clears array - needed if gender is switched
     jsonChartData.length = 0;
     // TODO - should probably load all the data, then have separate funcitons to select what's needed.
@@ -205,13 +213,11 @@ $(document).ready(function () {
       genderShort = 'm';
     }
     $.getJSON('data/dataChartStddevs_'+genderShort+'.json', function(data) {
+      console.log(data[metric].length);
       for(var i = 0; i < data[metric].length; i ++) {
         jsonChartData.push([data[metric][i][0], data[metric][i][1], data[metric][i][2], data[metric][i][3], data[metric][i][4], data[metric][i][5], data[metric][i][6], data[metric][i][7]]); 
       }
-      var lineData = jsonChartData;
-      console.log(jsonChartData);
-      // Executes the drawChart function
-      drawChart(metric, lineData);
+      drawChart(metric, jsonChartData);
     });
     
   }
@@ -304,14 +310,14 @@ $(document).ready(function () {
     // Draws a chart for single series only.
   function drawChart(passTitle, passLine) {
 
-    var xData = formLength;
+    var xData = formHeight;
     var yData = formWeight;
 
     if (xPoint == 'age') {
       xData = formAge;
     }
     if (yPoint == 'length') {
-      yData = formLength;
+      yData = formHeight;
     } else if (yPoint == 'bmi') {
       yData = formBMI.toFixed(1);
     }
@@ -383,8 +389,28 @@ $(document).ready(function () {
           }).length > 0;
     if (!anyFieldIsEmpty) {
       runCalc();
+    } else {
+      console.log('empty!');
     }
   }
+
+  // Unit conversion
+  $("input[name=unitType").on("change", function(){    
+    formUnit = $(this).val();
+    if (formUnit == 'imperial') {
+      $("#formHeight, #formWeight").addClass('imperial').val("");
+      $(".form-help-metric").fadeOut('200', function(){
+        $(".form-help-imperial").fadeIn('600');
+      });
+      formWeight, formHeight = '';
+    } else {
+      $("#formHeight, #formWeight").removeClass('imperial').val("");
+      $(".form-help-imperial").fadeOut('200', function(){
+        $(".form-help-metric").fadeIn('600');
+      });
+      formWeight, formHeight = '';
+    }
+  });
 
   // Trigger calculator when form values change
   $("#formGender").on("change", function(){    
@@ -396,6 +422,7 @@ $(document).ready(function () {
     formBirthday = new Date($(this).val());
     if (formMeasureDate) {
       formAge = getAgeAtDate(formBirthday, formMeasureDate);
+      $("#formCalcAge").text(formAge);
       fieldCheck();
     }
   });
@@ -403,15 +430,28 @@ $(document).ready(function () {
     formMeasureDate = new Date($(this).val());
     if (formBirthday) {
       formAge = getAgeAtDate(formBirthday, formMeasureDate);
+      $("#formCalcAge").text(formAge);
       fieldCheck();
     }
   });
   $("#formWeight").focusout(function(){
-    formWeight = $(this).val();
+    if ($(this).hasClass('imperial')) {
+      var toConv = $(this).val();
+      formWeight = convLbKg(toConv);
+    } else {
+      formWeight = $(this).val();
+    }
     fieldCheck();
   });
   $("#formHeight").focusout(function(){
-    formLength = $(this).val();
+    if ($(this).hasClass('imperial')) {
+      var toConv = $(this).val();
+      formHeight = convInCm(toConv);
+    } else {
+      // Need to round to nearest tenth for length-weight measure
+      formHeight = parseFloat($(this).val()).toFixed(1);
+    }
+    console.log(formHeight);
     fieldCheck();
   });
   // Main single line chart used with rows and subrows
@@ -426,7 +466,26 @@ $(document).ready(function () {
     return false;
   }));
 /*** End triggers ***/
-  
+
+/*** Test fill-in - just used for filling in dummy data quickly ***/
+  // Only kind of works
+  $("body").on('click','.test-trigger', function(){
+    var testAppt = $(this).attr('data-appt');
+    var testBirth = $(this).attr('data-birth');
+    var testGender = $(this).attr('data-gender');
+    var testHeight = $(this).attr('data-height');
+    var testUnit = $(this).attr('data-unit');
+    var testWeight = $(this).attr('data-weight');
+    $("#formBirthday").val(testBirth).trigger('focusout');
+    $("#formGender").val(testGender).trigger('change');
+    $("#formHeight").val(testHeight).trigger('focusout');
+    $("#formMeasureDate").val(testAppt).trigger('focusout');
+    $("#formWeight").val(testWeight).trigger('focusout');
+    $('input[name=unitType][value='+testUnit+']').prop("checked",true);
+    //runCalc();
+  });
+
+/*** End - Test fill-in ***/  
 
 /*** Misc functions ***/
 

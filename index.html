@@ -61,6 +61,20 @@
           <div class="span10">
 
 
+
+              <div class="control-group required to-fill">
+                <label class="control-label" for="formMeasureDate">Unit Type</label>
+                <div class="controls form-inline">
+                   <label class="radio inline">
+                    <input type="radio" name="unitType" id="unit1" value="metric" checked> Metric (kilograms, centimeters)
+                  </label>
+
+                  <label class="radio inline">
+                    <input type="radio" name="unitType" id="unit2" value="imperial"> Imperial (pounds, inches)
+                  </label>
+                </div>
+              </div>
+
               <div class="control-group required to-fill">
                 <label class="control-label" for="formMeasureDate">Date of Measurements</label>
                 <div class="controls form-inline">
@@ -73,17 +87,8 @@
                 <div class="controls form-inline">
 
                   <input type="number" step="any" min="0" class="input-mini trigger-calc" id="formWeight">
-                  
-                  <label class="radio">
-                    <input type="radio" name="inlineR" id="inlineRadio1" value="kgs" checked> kg
-                  </label>
-
-                  <label class="radio">
-                    <input type="radio" name="inlineR" id="inlineRadio2" value="lbs"> lb
-                  </label>
-
-                  <span class="help-inline">Only uses kg for now</span>
-
+                  <span class="help-inline form-help-metric">Kgs</span>
+                  <span class="help-inline form-help-imperial hide">Lbs</span>
                 </div>
 
               </div>
@@ -92,9 +97,9 @@
                 <label class="control-label" for="formHeight">Length/Height</label>
                 <div class="controls form-inline">
 
-                  <!-- <input type="number" class="input-mini" id="heightm"> <span class="help-inline">M</span> -->
-
-                  <input type="text" class="input-mini trigger-calc" id="formHeight"> <span class="help-inline">Cm (must be between 45 and 110 for this calculation)</span>
+                  <input type="text" class="input-mini trigger-calc" id="formHeight"> 
+                  <span class="help-inline form-help-metric">Cm (must be between 45 and 110)</span>
+                  <span class="help-inline form-help-imperial hide">Inches (must be between 17.75" and 43.25")</span>
                   
                 </div>
 
@@ -111,7 +116,9 @@
         <div class="row">
           <div class="span6">
 
-          <p><strong>Calculated BMI</strong>: <input type="text" class="input-mini" disabled="disabled" id="formBMI"></p>
+          <p><strong>Calculated Age at Measurement</strong>: <span id="formCalcAge"></span></p>
+
+          <p><strong>Calculated BMI</strong>: <span id="formBMI"></span></p>
 
           <table class="table table-border table-condensed">
           <thead>
@@ -133,19 +140,19 @@
           <td>Weight-for-age</td>
           <td id="calcP1">--</td>
           <td id="calc1">--</td>
-          <td><img src="img/icon-stats-bar.png" data-metric="who_weight_day_0-1856" class="disabled" data-xtitle="Age" data-ytitle="Weight (kg)" data-xpoint="age" data-ypoint="weight" /></td>
+          <td><img src="img/icon-stats-bar.png" data-metric="who_weight_day_0-3650" class="disabled" data-xtitle="Age" data-ytitle="Weight (kg)" data-xpoint="age" data-ypoint="weight" /></td>
           </tr>
           <tr>
           <td>Length-for-age</td>
           <td id="calcP2">--</td>
           <td id="calc2">--</td>
-          <td><img src="img/icon-stats-bar.png" data-metric="who_lengthHeight_day_0-1856" class="disabled" data-xtitle="Age" data-ytitle="Length (cm)" data-xpoint="age" data-ypoint="length" /></td>
+          <td><img src="img/icon-stats-bar.png" data-metric="who_lengthHeight_day_0-6935" class="disabled" data-xtitle="Age" data-ytitle="Length (cm)" data-xpoint="age" data-ypoint="length" /></td>
           </tr>
           <tr>
           <td>BMI-for-age</td>
           <td id="calcP3">--</td>
           <td id="calc3">--</td>
-          <td><img src="img/icon-stats-bar.png" data-metric="who_bmi_day_0-1856" class="disabled" data-xtitle="Age" data-ytitle="BMI" data-xpoint="age" data-ypoint="bmi" /></td>
+          <td><img src="img/icon-stats-bar.png" data-metric="who_bmi_day_0-6935" class="disabled" data-xtitle="Age" data-ytitle="BMI" data-xpoint="age" data-ypoint="bmi" /></td>
           </tr>
           </tbody>
           </table>
@@ -197,17 +204,17 @@
       <div id="container" style="width: 813px; margin: 0 auto"></div>
     </div>
     <div class="modal-footer print-hide">
-      <button href="#container" class="btn btn-small print-link"><?= $pedGrowthLabels[$lang][16] ?></button> 
-      <button class="btn" data-dismiss="modal" aria-hidden="true"><?= $allEnc[$lang][27] ?></button>
+      <button href="#container" class="btn btn-small print-link">Print</button> 
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
   </div>
 
-  <script>
-  $(document).ready(function() {
 
+  <div class="left-attach">
+    <button class="btn btn-small test-trigger" id="test1" data-unit="imperial" data-gender="male" data-appt="2013-06-01" data-birth="2012-01-01" data-weight="10" data-height="75">Test Fill-in #1</button><br /><br />
+    <button class="btn btn-small test-trigger" id="test2" data-unit="metric" data-gender="female" data-appt="2013-12-01" data-birth="2010-02-03" data-weight="15" data-height="92">Test Fill-in #2</button>
+  </div>
 
-  });
-  </script>
 
 </body>
 </html>
