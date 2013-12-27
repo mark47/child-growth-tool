@@ -4,6 +4,10 @@ body, table, tr, th, td {
   -webkit-print-color-adjust:exact;
 }
 
+.calc-container {
+	margin: 40px auto;
+}
+
 .modal {
     width: 800px;
     margin-left: -400px;
@@ -13,25 +17,27 @@ body, table, tr, th, td {
 }
 
 
-.left-attach {
+.right-attach {
 	position: fixed;
-	left: 0;
+	right: 0;
 	top: 3em;
 	padding: 0.5em;
-	-webkit-border-radius: 0 10px 10px 0;
-	-moz-border-radius: 0 10px 10px 0;
-	border-radius: 0 10px 10px 0;
+	-webkit-border-radius: 10px 0 0 10px;
+	-moz-border-radius: 10px 0 0 10px;
+	border-radius: 10px 0 0 10px;
 	border: 1px solid rgba(0, 0, 0, 0.2);
-	border-left: none;
+	border-right: none;
+	background-color: #eee;
 }
-
 
 
 @media (min-width: 1200px) {
 
 }
 @media (max-width: 979px) and (min-width: 768px) {
-
+	.calc-container { 
+		margin: 10px;
+	}
 }
 @media (max-width: 767px) {
 

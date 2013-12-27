@@ -121,7 +121,7 @@ $(document).ready(function () {
     // Attempt at more generic calculator. First input will be gender, 2nd input will be the x variable
     function getCalculation(gender, xVar, col, calcMetric) {
       line = null;
-      console.log(xVar + "---" + calcMetric);
+      //console.log(xVar + "---" + calcMetric);
       //small private helper
       var findRow = 
         function(arr, xVar) {
@@ -135,7 +135,7 @@ $(document).ready(function () {
         }
       //console.log(json[calcMetric][gender]);
       line = findRow(json[calcMetric], xVar);
-      console.log(line);
+      //console.log(line);
       return line != null ? line : 'N.A.';
     }
 
@@ -192,15 +192,13 @@ $(document).ready(function () {
 
       }
 
-    } else {
-      console.log('no dice');
     }
   }
 
 
 	var jsonChartData = [];
   function getChartLines(metric, gender) {
-    console.log(metric);
+    //console.log(metric);
     // Clears array - needed if gender is switched
     jsonChartData.length = 0;
     // TODO - should probably load all the data, then have separate funcitons to select what's needed.
@@ -213,7 +211,7 @@ $(document).ready(function () {
       genderShort = 'm';
     }
     $.getJSON('data/dataChartStddevs_'+genderShort+'.json', function(data) {
-      console.log(data[metric].length);
+      //console.log(data[metric].length);
       for(var i = 0; i < data[metric].length; i ++) {
         jsonChartData.push([data[metric][i][0], data[metric][i][1], data[metric][i][2], data[metric][i][3], data[metric][i][4], data[metric][i][5], data[metric][i][6], data[metric][i][7]]); 
       }
@@ -390,7 +388,7 @@ $(document).ready(function () {
     if (!anyFieldIsEmpty) {
       runCalc();
     } else {
-      console.log('empty!');
+      //console.log('empty!');
     }
   }
 
@@ -451,7 +449,6 @@ $(document).ready(function () {
       // Need to round to nearest tenth for length-weight measure
       formHeight = parseFloat($(this).val()).toFixed(1);
     }
-    console.log(formHeight);
     fieldCheck();
   });
   // Main single line chart used with rows and subrows
@@ -501,6 +498,17 @@ $(document).ready(function () {
   });
   $("#modalChart").on('hidden', function () {
     chartOptions.series = [];
+  });
+
+  // Bootstrap-style datepicker
+  $(".input-date").datepicker({
+    format: "yyyy-mm-dd",
+    startView: 1,
+    autoclose: true
+  }).on('changeDate', function(e){
+    $("#formBirthday").focusout();
+    $("#formMeasureDate").focusout();
+    fieldCheck();
   });
   
 /*** End misc functions ***/

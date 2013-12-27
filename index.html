@@ -7,11 +7,13 @@
 
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/font-awesome.css">    
+    <link rel="stylesheet" href="css/datepicker.css">
     <link rel="stylesheet" href="css/styles.css">
     <!-- 
     1. Add these JavaScript inclusions in the head of your page -->
     <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="js/highcharts.src.js"></script>
     <script type="text/javascript" src="js/pedGrowth.js"></script>
     
@@ -19,7 +21,7 @@
 </head>
 <body>
 
-  <div class="container" style="margin-top: 40px">
+  <div class="container calc-container">
 
 
   <h1>Calculator</h1>
@@ -47,7 +49,7 @@
               <div class="control-group required to-fill">
                 <label class="control-label" for="formBirthday">Birthday</label>
                 <div class="controls form-inline">
-                  <input type="text" class="input-small trigger-calc" placeholder="YYYY-MM-DD" id="formBirthday"> <span class="help-inline">For demo, please enter as YYYY-MM-DD</span>
+                  <input type="text" class="input-small trigger-calc input-date" placeholder="YYYY-MM-DD" id="formBirthday"> <span class="help-inline">For demo, please enter as YYYY-MM-DD</span>
                 </div>
               </div>
 
@@ -78,7 +80,7 @@
               <div class="control-group required to-fill">
                 <label class="control-label" for="formMeasureDate">Date of Measurements</label>
                 <div class="controls form-inline">
-                  <input type="text" class="input-small trigger-calc" placeholder="YYYY-MM-DD" id="formMeasureDate"> <span class="help-inline">For demo, please enter as YYYY-MM-DD</span>
+                  <input type="text" class="input-small trigger-calc input-date" placeholder="YYYY-MM-DD" id="formMeasureDate"> <span class="help-inline">For demo, please enter as YYYY-MM-DD</span>
                 </div>
               </div>
 
@@ -204,16 +206,16 @@
       <div id="container" style="width: 813px; margin: 0 auto"></div>
     </div>
     <div class="modal-footer print-hide">
-      <button href="#container" class="btn btn-small print-link">Print</button> 
       <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
   </div>
 
 
-  <div class="left-attach">
-    <button class="btn btn-small test-trigger" id="test1" data-unit="imperial" data-gender="male" data-appt="2013-06-01" data-birth="2012-01-01" data-weight="10" data-height="75">Test Fill-in #1</button><br /><br />
-    <button class="btn btn-small test-trigger" id="test2" data-unit="metric" data-gender="female" data-appt="2013-12-01" data-birth="2010-02-03" data-weight="15" data-height="92">Test Fill-in #2</button>
+  <div class="right-attach">
+    <button class="btn btn-mini test-trigger" id="test1" data-unit="imperial" data-gender="male" data-appt="2013-06-01" data-birth="2012-01-01" data-weight="10" data-height="75">Test Fill-in #1</button><br /><br />
+    <button class="btn btn-mini test-trigger" id="test2" data-unit="metric" data-gender="female" data-appt="2013-12-01" data-birth="2010-02-03" data-weight="15" data-height="92">Test Fill-in #2</button>
   </div>
+
 
 
 </body>
